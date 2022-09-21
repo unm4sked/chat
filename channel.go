@@ -15,7 +15,7 @@ func CreateChannel(name string) *Channel {
 }
 
 func (channel *Channel) sendMessage(message []byte) {
-	for client, _ := range channel.clients {
+	for client := range channel.clients {
 		client.send(message)
 	}
 }

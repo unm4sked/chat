@@ -72,11 +72,13 @@ func FireWsServer(server *WSServer, w http.ResponseWriter, r *http.Request) {
 
 		server.handleMessage(message)
 
-		fmt.Println(p)
+		fmt.Println("Message from client: ", string(p))
 	}
 }
 
+// {text: xxx, action: "action1"}
 func (w *WSServer) handleMessage(message *Message) {
+	fmt.Println("Action: ", message.Payload.Action)
 	switch message.Payload.Action {
 	case sendMessage:
 		{
@@ -106,14 +108,17 @@ func (w *WSServer) handleMessage(message *Message) {
 			for channel := range w.channels {
 				channels = append(channels, channel.name)
 			}
-
-			channelsJSON, err := json.Marshal(channels)
+			fmt.Println("List of channels", channels)
+			jsonResult, err := json.Marshal(channels)
 			if err != nil {
-				fmt.Println(err)
+				fmt.Println("Stringify Error", err)
 				break
 			}
 
-			message.Sender.conn.WriteMessage(websocket.TextMessage, channelsJSON)
+			err = message.Sender.conn.WriteMessage(websocket.TextMessage, jsonResult)
+			if err != nil {
+				fmt.Println("Write message error", err)
+			}
 		}
 	case quitChannel:
 		{
@@ -129,5 +134,8 @@ func (w *WSServer) handleMessage(message *Message) {
 
 			delete(message.Sender.channels, channel)
 		}
+
+	default:
+		fmt.Println("Action not match: ", message.Payload.Action)
 	}
 }

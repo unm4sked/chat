@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
 type Message struct {
@@ -23,17 +22,17 @@ func CreateMessage(client *Client, paylod *Payload) *Message {
 type Payload struct {
 	Text    string `json:"Text"`
 	Action  string `json:"action"`
-	Channel string `json:"channel`
+	Channel string `json:"channel"`
 }
 
-func (payload *Payload) toJson() []byte {
-	json, err := json.Marshal(payload)
-	if err != nil {
-		log.Println("Error while encode Payload", err)
-	}
+// func (payload *Payload) toJson() []byte {
+// 	json, err := json.Marshal(payload)
+// 	if err != nil {
+// 		log.Println("Error while encode Payload", err)
+// 	}
 
-	return json
-}
+// 	return json
+// }
 
 func ParsePayload(jsonPayload []byte) (*Payload, error) {
 	var payload Payload
